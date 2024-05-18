@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outlet Search</title>
+    <style>
+  body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #000000;
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00a8ff;
+            text-shadow: 0 0 5px #00a8ff;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            background-color: #000000;
+            color: #fff;
+            border: 1px solid #00a8ff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #00a8ff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #00a8ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 5px #00a8ff;
+            transition: transform 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border: 1px solid #00a8ff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00a8ff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-item::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(0deg, transparent, #00a8ff, #00a8ff);
+            transform-origin: bottom right;
+            animation: animate 6s linear infinite;
+        }
+
+        .result-item::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(0deg, transparent, #00a8ff, #00a8ff);
+            transform-origin: bottom right;
+            animation: animate 6s linear infinite;
+            animation-delay: -3s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .result-item h3 {
+            margin-top: 0;
+            color: #00a8ff;
+            text-shadow: 0 0 3px #00a8ff;
+        }
+
+        .result-item img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #00a8ff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #00a8ff;
+        }
+
+        .download-button {
+            display: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #00a8ff;
+            color: #fff;
+            text-decoration: none;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #00a8ff;
+            transition: transform 0.3s ease;
+        }
+
+        .download-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BP Search</h1>
+    </header>
+
+    <main>
+        <form id="search-form">
+            <input type="text" id="search-input" placeholder="Search outlets...">
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="search-results"></div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        // Array of outlets
+        const outlets = [
+            {
+                name: 'Truck',
+                description: 'A basic truck in sfs',
+                image: 'truck.jpg',
+                files: ['truck/Blueprint.txt', 'truck/version.txt']
+            },
+            {
+                name: 'Tower Satellite',
+                description: 'Tower satilite whch rotates around the earth',
+                image: 'Tower Satellite.jpg',
+                files: ['Tower Satellite/Blueprint.txt','Tower Satellite/Version.txt']
+            },
+
+            {
+                name: 'Underground',
+                description: '',
+                image: 'under ground.jpg',
+                files: ['underground/Blueprint.txt', 'underground/version.txt']
+            },
+            {
+                name: 'Tesla car white',
+                description: 'tesla car',
+                image: 'tesla.jpg',
+                files: ['Tesla car white 1/Blueprint.txt','Tesla car white 1/version.txt']
+            },
+            {
+                name: 'Street Light',
+                description: 'A stright light in sfs',
+                image: 'street light.jpg',
+                files: ['street light/blueprint','street light/version.txt']
+            },
+            {
+                name: 'starship',
+                description: 'starship in sfs',
+                image: 'starship.jpg',
+                files: ['Starship_3D H/blueprint','Starship_3D H/version.txt']
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf']
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },  {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            {
+                name: 'Outlet 2',
+                description: 'Description of Outlet 2',
+                image: 'outlet2.jpg',
+                files: ['outlet2.pdf',""]
+            },
+            
+        
+        ];
+
+        // Function to search outlets based on the query
+        function searchOutlets(query) {
+            return outlets.filter(outlet => {
+                return outlet.name.toLowerCase().includes(query.toLowerCase());
+            });
+        }
+
+        // Handle form submission
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = searchInput.value.trim();
+            const results = searchOutlets(query);
+            displayResults(results);
+        });
+
+        // Function to display the search results
+        function displayResults(results) {
+            searchResults.innerHTML = '';
+            if (results.length === 0) {
+                searchResults.textContent = 'No outlets found.';
+            } else {
+                results.forEach(outlet => {
+                    const resultItem = document.createElement('div');
+                    resultItem.classList.add('result-item');
+
+                    const title = document.createElement('h3');
+                    title.textContent = outlet.name;
+                    resultItem.appendChild(title);
+
+                    const description = document.createElement('p');
+                    description.textContent = outlet.description;
+                    resultItem.appendChild(description);
+
+                    const showButton = document.createElement('button');
+                    showButton.textContent = 'Show Details';
+                    showButton.addEventListener('click', function() {
+                        const details = document.createElement('div');
+                        details.innerHTML = `
+                            <p>Additional details about ${outlet.name}.</p>
+                            <img src="${outlet.image}" alt="${outlet.name}">
+                            <button class="close-button">Close</button>
+                        `;
+                        resultItem.appendChild(details);
+                        showButton.style.display = 'none';
+                        downloadButton.style.display = 'inline'; // Show the download button
+
+                        const closeButton = details.querySelector('.close-button');
+                        closeButton.addEventListener('click', function() {
+                            resultItem.removeChild(details);
+                            showButton.style.display = 'inline';
+                            downloadButton.style.display = 'none'; // Hide the download button
+                        });
+                    });
+                    resultItem.appendChild(showButton);
+
+                    const downloadButton = document.createElement('button');
+                    downloadButton.classList.add('download-button');
+                    downloadButton.textContent = 'Download All Files';
+                    downloadButton.addEventListener('click', async function() {
+                        const zip = new JSZip();
+                        const folder = zip.folder(outlet.name);
+
+                        // Fetch all files and add to the zip
+                        const filePromises = outlet.files.map(file => {
+                            return fetch(file)
+                                .then(response => response.blob())
+                                .then(blob => {
+                                    const fileName = file.split('/').pop();
+                                    folder.file(fileName, blob);
+                                });
+                        });
+
+                        // Wait for all files to be fetched and added to the zip
+                        await Promise.all(filePromises);
+
+                        // Generate and download the zip file
+                        zip.generateAsync({ type: 'blob' })
+                            .then(content => {
+                                saveAs(content, `${outlet.name}.zip`);
+                            });
+                    });
+                    resultItem.appendChild(downloadButton);
+
+                    searchResults.appendChild(resultItem);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
